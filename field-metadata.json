@@ -1,0 +1,13 @@
+{
+  "type": "record",
+  "name": "Metadata",
+  "fields": [
+    {
+      "name": "customer_name",
+      "type": "string",
+      "classifications": [
+        "PII"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{ "schema": "{
+  \"type\": \"record\",
+  \"name\": \"Classifications\",
+  \"fields\": [],
+  \"classifications\": {
+    \"PII\": {
+      \"encrypt\": {
+        \"key\": \"GeneratedKey\",
+        \"wrapping.key\": \"RSAWrappingKey\"
+      }
+    }
+  }
+}" }
