@@ -32,12 +32,12 @@ public class BasicProducerComponent {
     @SuppressWarnings("unused")
     private KafkaTemplate<String, Order> ordersTemplate;
 
-    @Scheduled(initialDelay = 500, fixedRate = 3000)
+    @Scheduled(initialDelay = 500, fixedRate = 5000)
     @SuppressWarnings("unused")
     public void ordersProducer() {
         final Order order = dataSource.retrieveOrder();
         LOGGER.info("Sending='{}'", order);
-        ordersTemplate.send(ordersTopic, order);
+        ordersTemplate.send(ordersTopic, order.getOrderId(), order);
     }
 
     /**
@@ -51,13 +51,13 @@ public class BasicProducerComponent {
     @SuppressWarnings("unused")
     private KafkaTemplate<String, Book> booksTemplate;
 
-    @Scheduled(initialDelay = 500, fixedRate = 2500)
+    @Scheduled(initialDelay = 500, fixedRate = 4000)
     @SuppressWarnings("unused")
     public void produceBooks() {
         final Book book = dataSource.retrieveBook();
 
         LOGGER.info("Sending='{}'", book);
-        booksTemplate.send(booksTopic, book);
+        booksTemplate.send(booksTopic, book.getBookId(), book);
     }
 
     /**
@@ -71,12 +71,12 @@ public class BasicProducerComponent {
     @SuppressWarnings("unused")
     private KafkaTemplate<String, Customer> customersTemplate;
 
-    @Scheduled(initialDelay = 500, fixedRate = 2000)
+    @Scheduled(initialDelay = 500, fixedRate = 3000)
     @SuppressWarnings("unused")
     public void customersProducer() {
         final Customer customer = dataSource.retrieveCustomer();
 
         LOGGER.info("Sending='{}'", customer);
-        customersTemplate.send(customersTopic, customer);
+        customersTemplate.send(customersTopic, customer.getCustomerId(), customer);
     }
 }
