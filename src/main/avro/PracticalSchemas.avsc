@@ -17,22 +17,7 @@
   {
     "namespace": "io.confluent.model.avro",
     "type": "record",
-    "name": "Customer",
-    "fields": [
-      {
-        "name": "customer_id",
-        "type": "string"
-      },
-      {
-        "name": "customer_name",
-        "type": "string"
-      }
-    ]
-  },
-  {
-    "namespace": "io.confluent.model.avro",
-    "type": "record",
-    "name": "Order",
+    "name": "OnlineOrder",
     "fields": [
       {
         "name": "order_id",
@@ -40,10 +25,6 @@
       },
       {
         "name": "book_id",
-        "type": "string"
-      },
-      {
-        "name": "customer_id",
         "type": "string"
       },
       {
@@ -63,10 +44,6 @@
       },
       {
         "name": "book_title",
-        "type": "string"
-      },
-      {
-        "name": "customer_name",
         "type": "string"
       },
       {

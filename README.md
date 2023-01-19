@@ -20,6 +20,15 @@ mvn install:install-file -Dfile=confluent-encryption-kafka-2.0.8-cp-7.1/confluen
 
 mvn install:install-file -Dfile=confluent-encryption-serializer-2.0.8-cp-7.1/confluent-encryption-serializer-2.0.8-cp-7.1.jar \
 -DgroupId=io.confluent.confluent-encryption -DartifactId=confluent-encryption-serializer -Dversion=2.0.8-cp-7.1 -Dpackaging=jar
+
+mvn install:install-file -Dfile=confluent-encryption-kstreams-2.0.8-cp-7.1/confluent-encryption-kstreams-2.0.8-cp-7.1.jar \
+-DgroupId=io.confluent.confluent-encryption -DartifactId=confluent-encryption-kstreams -Dversion=2.0.8-cp-7.1 -Dpackaging=jar
+```
+
+Create POJO classes for Avro
+
+```shell
+mvn generate-sources
 ```
 
 https://github.com/confluentinc/confluent-encryption/blob/master/docs_src/kafka_clients.md#field-level-encryption-overview
@@ -35,9 +44,11 @@ confluent local services connect start
 kafka-topics --bootstrap-server localhost:9092 --list
 
 echo "{ \"schema\": \"$(cat field-classifications.json | sed 's/\"/\\\"/g')\" }" > field-classifications.schema
+curl localhost:8081/subjects/field-classifications -XDELETE # delete the subject if incompatible
 curl localhost:8081/subjects/field-classifications/versions -XPOST -H "Content-Type: application/json" -d @field-classifications.schema
 
 echo "{ \"schema\": \"$(cat field-metadata.json | sed 's/\"/\\\"/g')\" }" > field-metadata.schema
+curl localhost:8081/subjects/field-metadata -XDELETE # delete the subject if incompatible
 curl localhost:8081/subjects/field-metadata/versions -XPOST -H "Content-Type: application/json" -d @field-metadata.schema
 ```
 

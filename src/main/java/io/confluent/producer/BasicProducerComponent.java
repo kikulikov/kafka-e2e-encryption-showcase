@@ -2,8 +2,7 @@ package io.confluent.producer;
 
 import io.confluent.generator.DataSource;
 import io.confluent.model.avro.Book;
-import io.confluent.model.avro.Customer;
-import io.confluent.model.avro.Order;
+import io.confluent.model.avro.OnlineOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,19 +24,19 @@ public class BasicProducerComponent {
      * ORDERS
      */
 
-    @Value("${application.topic.orders}")
-    private String ordersTopic;
+    @Value("${application.topic.online-orders}")
+    private String topicOnlineOrders;
 
     @Autowired
     @SuppressWarnings("unused")
-    private KafkaTemplate<String, Order> ordersTemplate;
+    private KafkaTemplate<String, OnlineOrder> onlineOrderTemplate;
 
     @Scheduled(initialDelay = 500, fixedRate = 5000)
     @SuppressWarnings("unused")
     public void ordersProducer() {
-        final Order order = dataSource.retrieveOrder();
+        final OnlineOrder order = dataSource.retrieveOnlineOrder();
         LOGGER.info("Sending='{}'", order);
-        ordersTemplate.send(ordersTopic, order.getOrderId(), order);
+        onlineOrderTemplate.send(topicOnlineOrders, order.getOrderId(), order);
     }
 
     /**
@@ -45,7 +44,7 @@ public class BasicProducerComponent {
      */
 
     @Value("${application.topic.books}")
-    private String booksTopic;
+    private String topicBooks;
 
     @Autowired
     @SuppressWarnings("unused")
@@ -57,26 +56,6 @@ public class BasicProducerComponent {
         final Book book = dataSource.retrieveBook();
 
         LOGGER.info("Sending='{}'", book);
-        booksTemplate.send(booksTopic, book.getBookId(), book);
-    }
-
-    /**
-     * CUSTOMERS
-     */
-
-    @Value("${application.topic.customers}")
-    private String customersTopic;
-
-    @Autowired
-    @SuppressWarnings("unused")
-    private KafkaTemplate<String, Customer> customersTemplate;
-
-    @Scheduled(initialDelay = 500, fixedRate = 3000)
-    @SuppressWarnings("unused")
-    public void customersProducer() {
-        final Customer customer = dataSource.retrieveCustomer();
-
-        LOGGER.info("Sending='{}'", customer);
-        customersTemplate.send(customersTopic, customer.getCustomerId(), customer);
+        booksTemplate.send(topicBooks, book.getBookId(), book);
     }
 }

@@ -22,23 +22,14 @@ public class BasicAdminComponent {
     @Value("${application.topic.default.partitions}")
     private Integer defaultPartitions;
 
-    @Value("${application.topic.orders}")
-    private String topicOrders;
-
     @Value("${application.topic.books}")
     private String topicBooks;
 
-    @Value("${application.topic.customers}")
-    private String topicCustomers;
+    @Value("${application.topic.online-orders}")
+    private String topicOnlineOrders;
 
-    @Value("${application.topic.enriched}")
-    private String topicEnriched;
-
-    @Bean
-    NewTopic topicOrders() {
-        // Makes sure that the topic exists using the Kafka Admin API
-        return new NewTopic(topicOrders, Optional.of(defaultPartitions), Optional.of(defaultReplicas));
-    }
+    @Value("${application.topic.enriched-orders}")
+    private String topicEnrichedOrders;
 
     @Bean
     NewTopic topicBooks() {
@@ -47,15 +38,16 @@ public class BasicAdminComponent {
     }
 
     @Bean
-    NewTopic topicCustomers() {
+    NewTopic topicOnlineOrders() {
         // Makes sure that the topic exists using the Kafka Admin API
-        return new NewTopic(topicCustomers, Optional.of(defaultPartitions), Optional.of(defaultReplicas));
+        return new NewTopic(topicOnlineOrders, Optional.of(defaultPartitions), Optional.of(defaultReplicas));
     }
 
+
     @Bean
-    NewTopic topicEnriched() {
+    NewTopic topicEnrichedOrders() {
         // Makes sure that the topic exists using the Kafka Admin API
-        return new NewTopic(topicEnriched, Optional.of(defaultPartitions), Optional.of(defaultReplicas));
+        return new NewTopic(topicEnrichedOrders, Optional.of(defaultPartitions), Optional.of(defaultReplicas));
     }
 
     // @Autowired

@@ -2,34 +2,28 @@ package io.confluent.generator;
 
 import com.github.javafaker.Faker;
 import io.confluent.model.avro.Book;
-import io.confluent.model.avro.Customer;
-import io.confluent.model.avro.Order;
+import io.confluent.model.avro.OnlineOrder;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.UUID;
 
 @Component
 public class DataSourceFaker implements DataSource {
 
     @Override
-    public Order retrieveOrder() {
-        return new Order(FAKER.internet().uuid(), retrieveBook().getBookId(),
-                retrieveCustomer().getCustomerId(), FAKER.random().nextInt(1, 10)
-        );
-    }
-
-    @Override
     public Book retrieveBook() {
         final var title = FAKER.harryPotter().book();
-        return new Book(toHex(md5(title)), title);
+        final var id = UUID.nameUUIDFromBytes(title.getBytes()).toString();
+        return new Book(id, title);
     }
 
     @Override
-    public Customer retrieveCustomer() {
-        final var name = FAKER.harryPotter().character();
-        return new Customer(toHex(md5(name)), name);
+    public OnlineOrder retrieveOnlineOrder() {
+        return new OnlineOrder(FAKER.internet().uuid(),
+                retrieveBook().getBookId(), FAKER.random().nextInt(1, 10));
     }
 
     private static final Faker FAKER = Faker.instance();

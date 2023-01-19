@@ -3,7 +3,7 @@
   "name": "Metadata",
   "fields": [
     {
-      "name": "customer_name",
+      "name": "book_title",
       "type": "string",
       "classifications": [
         "PII"

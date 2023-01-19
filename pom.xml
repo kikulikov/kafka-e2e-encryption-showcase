@@ -76,6 +76,11 @@
         </dependency>
         <dependency>
             <groupId>io.confluent.confluent-encryption</groupId>
+            <artifactId>confluent-encryption-kstreams</artifactId>
+            <version>${encryption.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.confluent.confluent-encryption</groupId>
             <artifactId>confluent-encryption-serializer</artifactId>
             <version>${encryption.version}</version>
         </dependency>

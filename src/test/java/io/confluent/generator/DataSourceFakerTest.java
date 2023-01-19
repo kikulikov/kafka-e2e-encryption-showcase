@@ -29,7 +29,7 @@ class DataSourceFakerTest {
 
     @Test
     void generateOrder() {
-        final var order = eventSource.retrieveOrder();
+        final var order = eventSource.retrieveOnlineOrder();
         LOGGER.info(order.toString());
         assertNotNull(order.getOrderId());
         assertNotNull(order.getBookId());
