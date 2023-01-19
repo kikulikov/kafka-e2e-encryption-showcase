@@ -31,9 +31,9 @@ public class BasicProducerComponent {
     @SuppressWarnings("unused")
     private KafkaTemplate<String, OnlineOrder> onlineOrderTemplate;
 
-    @Scheduled(initialDelay = 500, fixedRate = 5000)
+    @Scheduled(initialDelay = 500, fixedRate = 4000)
     @SuppressWarnings("unused")
-    public void ordersProducer() {
+    public void produceOnlineOrders() {
         final OnlineOrder order = dataSource.retrieveOnlineOrder();
         LOGGER.info("Sending='{}'", order);
         onlineOrderTemplate.send(topicOnlineOrders, order.getOrderId(), order);
@@ -50,7 +50,7 @@ public class BasicProducerComponent {
     @SuppressWarnings("unused")
     private KafkaTemplate<String, Book> booksTemplate;
 
-    @Scheduled(initialDelay = 500, fixedRate = 4000)
+    @Scheduled(initialDelay = 500, fixedRate = 7000)
     @SuppressWarnings("unused")
     public void produceBooks() {
         final Book book = dataSource.retrieveBook();
