@@ -1,6 +1,7 @@
 package io.confluent.streams;
 
 import io.confluent.encryption.kstreams.api.SecuredStores;
+import io.confluent.encryption.serializers.avro.SecuredSpecificAvroSerde;
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
 import io.confluent.model.avro.Book;
 import io.confluent.model.avro.EnrichedOrder;
@@ -34,9 +35,9 @@ public class EnrichTopology {
     private String topicEnrichedOrders;
 
     private static final Serde<String> STRING_SERDE = Serdes.String();
-    private static final Serde<Book> bookSerde = new SpecificAvroSerde<>();
-    private static final Serde<OnlineOrder> onlineOrderSerde = new SpecificAvroSerde<>();
-    private static final Serde<EnrichedOrder> enrichedOrderSerde = new SpecificAvroSerde<>();
+    private static final Serde<Book> bookSerde = new SecuredSpecificAvroSerde<>();
+    // private static final Serde<OnlineOrder> onlineOrderSerde = new SecuredSpecificAvroSerde<>();
+    // private static final Serde<EnrichedOrder> enrichedOrderSerde = new SecuredSpecificAvroSerde<>();
 
     // public EnrichTopology(@NonNull SchemaRegistryConfig registryConfig, @NonNull BasicAuthConfig authConfig) {
     //     final var configMap = new HashMap<String, String>();
@@ -59,7 +60,7 @@ public class EnrichTopology {
                 .globalTable(topicBooks, Consumed.with(STRING_SERDE, bookSerde), bookstore);
 
         final KStream<String, OnlineOrder> ordersStream = streamsBuilder
-                .stream(topicOnlineOrders, Consumed.with(STRING_SERDE, onlineOrderSerde));
+                .stream(topicOnlineOrders);
 
         final var ordersWithBooks = ordersStream
                 .join(bookGlobalTable, (key, order) -> order.getBookId(), (order, book) -> {
@@ -71,7 +72,7 @@ public class EnrichTopology {
                 });
 
         ordersWithBooks.peek((m, n) -> LOGGER.info("Enriched order [" + m + ":" + n + "]"));
-        ordersWithBooks.to(topicEnrichedOrders, Produced.with(STRING_SERDE, enrichedOrderSerde));
+        ordersWithBooks.to(topicEnrichedOrders);
 
         return ordersWithBooks;
     }
