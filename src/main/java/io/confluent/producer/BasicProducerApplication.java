@@ -5,9 +5,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-@ComponentScan({"io.confluent.generator", "io.confluent.producer"})
-@SpringBootApplication
 @EnableScheduling
+@SpringBootApplication
+@ComponentScan({"io.confluent.datasource", "io.confluent.producer"})
 public class BasicProducerApplication {
 
     public static void main(String[] args) {

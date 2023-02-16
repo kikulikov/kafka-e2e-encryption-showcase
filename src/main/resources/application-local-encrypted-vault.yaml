@@ -1,0 +1,60 @@
+logging.level.root: INFO
+
+application.topic.default.replicas: 1
+application.topic.default.partitions: 1
+
+application.topic.books: encrypted-vault-books
+application.topic.orders: encrypted-vault-orders
+application.topic.counts: encrypted-vault-counts
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local-encrypted-payload
+  kafka:
+    properties:
+      bootstrap.servers: localhost:9092
+      schema.registry.url: http://localhost:8081
+    producer:
+      client-id: encrypted-payload-avro-producer
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: io.confluent.encryption.serializers.avro.SecuredSpecificAvroSerializer
+      properties:
+        value.serializer.key: "DataCipher"
+        encryption.provider.name: "generator"
+        value.serializer.wrapping.key: "MasterCipher"
+        value.serializer.wrapping.key.provider.name: "vault"
+        generator.provider.class: "AESGeneratorCipherProvider"
+        generator.provider.symmetric.key.size: 256
+#        cached.provider.class: "SharedCachedCipherProvider"
+#        cached.provider.expiry: 600
+#        cached.provider.name: "vault"
+        vault.provider.class: "VaultSecretCipherProvider"
+        vault.provider.url: "http://localhost:8200"
+        vault.provider.token: "confluent"
+        vault.provider.path: "secret/data/master-public"
+        vault.provider.keys: "WrappingMasterKey"
+        vault.provider.WrappingMasterKey.key.type: "PublicKey"
+    consumer:
+      group-id: encrypted-payload-avro-consumer
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: io.confluent.encryption.serializers.avro.SecuredSpecificAvroDeserializer
+      properties.specific.avro.reader: true
+      auto-offset-reset: latest
+      properties:
+        value.deserializer.key: "DataCipher"
+        encryption.provider.name: "generator"
+        value.deserializer.wrapping.key: "MasterCipher"
+        value.deserializer.wrapping.key.provider.name: "vault"
+        generator.provider.class: "AESGeneratorCipherProvider"
+        generator.provider.symmetric.key.size: 256
+#        cached.provider.class: "SharedCachedCipherProvider"
+#        cached.provider.expiry: 600
+#        cached.provider.name: "vault"
+        vault.provider.class: "VaultSecretCipherProvider"
+        vault.provider.url: "http://localhost:8200"
+        vault.provider.token: "confluent"
+        vault.provider.path: "secret/data/master-public"
+        vault.provider.keys: "WrappingMasterKey"
+        vault.provider.WrappingMasterKey.key.type: "PublicKey"

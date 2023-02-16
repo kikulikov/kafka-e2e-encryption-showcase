@@ -1,6 +1,28 @@
 # Demo
 
+## Run Spring Boot Application
+
+You can pass a directory to `--spring.config.location`.
+Spring will load only the file application.properties and profile specific file like `application-{profile name}.properties`.
+
+Then you can start your application with:
+```
+java -jar {path of jar} --spring.config.location=/path/of/both/properties --spring.profiles.active=common
+```
+
+## Docker Compose
+
+```shell
+docker-compose -f docker-hashicorp-vault/docker-compose.yml up
+```
+
 ## Guide
+
+Generate AES key
+
+```shell
+openssl rand -base64 32
+```
 
 Generate RSA public and private keys
 
@@ -9,7 +31,22 @@ openssl genpkey -algorithm RSA -outform PEM -out private_key.pem -pkeyopt rsa_ke
 openssl rsa -in private_key.pem -out public_key.pem -pubout -outform PEM
 ```
 
-Add libraries to the local maven
+Alternatively, generate a certificate like
+
+```shell
+# generate private key
+openssl genpkey -algorithm RSA -outform PEM -out privatekey.pem -pkeyopt rsa_keygen_bits:2048
+
+# generate certificate request
+openssl req -new -key privatekey.pem -out server.csr -subj "/C=GB/L=London/O=Confluent/CN=e2e"
+openssl req -noout -text -in server.csr
+
+# generate certificate
+openssl x509 -req -days 3650 -in server.csr -signkey privatekey.pem -out server.crt
+openssl x509 -noout -text -in server.crt
+```
+
+Add libraries to the local maven as
 
 ```shell
 mvn install:install-file -Dfile=confluent-encryption-common-2.0.8-cp-7.1/confluent-encryption-common-2.0.8-cp-7.1.jar \

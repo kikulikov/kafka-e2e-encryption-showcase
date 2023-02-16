@@ -1,8 +1,8 @@
 package io.confluent.consumer;
 
 import io.confluent.model.avro.Book;
-import io.confluent.model.avro.EnrichedOrder;
-import io.confluent.model.avro.OnlineOrder;
+import io.confluent.model.avro.Count;
+import io.confluent.model.avro.Order;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -16,23 +16,23 @@ public class BasicConsumerComponent {
 
     @KafkaListener(topics = "${application.topic.books}")
     @SuppressWarnings("unused")
-    public void receive(@Payload Book entry) {
+    public void receive(@Payload Book book) {
         // process the received record accordingly
-        LOGGER.info("Received the Book '{}'", entry.toString());
+        LOGGER.info("Received the Book '{}'", book.toString());
     }
 
-    @KafkaListener(topics = "${application.topic.online-orders}")
+    @KafkaListener(topics = "${application.topic.orders}")
     @SuppressWarnings("unused")
-    public void receive(@Payload OnlineOrder entry) {
+    public void receive(@Payload Order order) {
         // process the received record accordingly
-        LOGGER.info("Received the Online Order '{}'", entry.toString());
+        LOGGER.info("Received the Order '{}'", order.toString());
     }
 
-    @KafkaListener(topics = "${application.topic.enriched-orders}")
+    @KafkaListener(topics = "${application.topic.counts}")
     @SuppressWarnings("unused")
-    public void receive(@Payload EnrichedOrder entry) {
+    public void receive(@Payload Count count) {
         // process the received record accordingly
-        LOGGER.info("Received the Enriched Order '{}'", entry.toString());
+        LOGGER.info("Received the Count '{}'", count.toString());
     }
 }
 

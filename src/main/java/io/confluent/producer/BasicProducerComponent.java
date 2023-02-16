@@ -1,8 +1,8 @@
 package io.confluent.producer;
 
-import io.confluent.generator.DataSource;
+import io.confluent.datasource.DataSource;
 import io.confluent.model.avro.Book;
-import io.confluent.model.avro.OnlineOrder;
+import io.confluent.model.avro.Order;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,25 +21,6 @@ public class BasicProducerComponent {
     private DataSource dataSource;
 
     /**
-     * ORDERS
-     */
-
-    @Value("${application.topic.online-orders}")
-    private String topicOnlineOrders;
-
-    @Autowired
-    @SuppressWarnings("unused")
-    private KafkaTemplate<String, OnlineOrder> onlineOrderTemplate;
-
-    @Scheduled(initialDelay = 500, fixedRate = 4000)
-    @SuppressWarnings("unused")
-    public void produceOnlineOrders() {
-        final OnlineOrder order = dataSource.retrieveOnlineOrder();
-        LOGGER.info("Sending='{}'", order);
-        onlineOrderTemplate.send(topicOnlineOrders, order.getOrderId(), order);
-    }
-
-    /**
      * BOOKS
      */
 
@@ -53,9 +34,27 @@ public class BasicProducerComponent {
     @Scheduled(initialDelay = 500, fixedRate = 7000)
     @SuppressWarnings("unused")
     public void produceBooks() {
-        final Book book = dataSource.retrieveBook();
-
+        final Book book = dataSource.nextBook();
         LOGGER.info("Sending='{}'", book);
         booksTemplate.send(topicBooks, book.getBookId(), book);
+    }
+
+    /**
+     * ORDERS
+     */
+
+    @Value("${application.topic.orders}")
+    private String topicOrders;
+
+    @Autowired
+    @SuppressWarnings("unused")
+    private KafkaTemplate<String, Order> ordersTemplate;
+
+    @Scheduled(initialDelay = 500, fixedRate = 4000)
+    @SuppressWarnings("unused")
+    public void produceOnlineOrders() {
+        final Order order = dataSource.nextOrder();
+        LOGGER.info("Sending='{}'", order);
+        ordersTemplate.send(topicOrders, order.getOrderId(), order);
     }
 }

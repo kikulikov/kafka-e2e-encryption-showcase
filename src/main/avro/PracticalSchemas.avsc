@@ -17,7 +17,7 @@
   {
     "namespace": "io.confluent.model.avro",
     "type": "record",
-    "name": "OnlineOrder",
+    "name": "Order",
     "fields": [
       {
         "name": "order_id",
@@ -30,16 +30,20 @@
       {
         "name": "quantity",
         "type": "int"
+      },
+      {
+        "name": "card_number",
+        "type": "string"
       }
     ]
   },
   {
     "namespace": "io.confluent.model.avro",
     "type": "record",
-    "name": "EnrichedOrder",
+    "name": "Count",
     "fields": [
       {
-        "name": "order_id",
+        "name": "book_id",
         "type": "string"
       },
       {
@@ -47,7 +51,7 @@
         "type": "string"
       },
       {
-        "name": "quantity",
+        "name": "total",
         "type": "int"
       }
     ]
