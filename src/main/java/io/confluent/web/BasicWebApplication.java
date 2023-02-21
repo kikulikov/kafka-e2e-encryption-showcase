@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan({"io.confluent.controller", "io.confluent.datasource"})
+@ComponentScan({"io.confluent.web", "io.confluent.datasource"})
 public class BasicWebApplication {
 
     public static void main(String[] args) {

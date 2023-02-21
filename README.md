@@ -31,20 +31,25 @@ Confluent employees:
 The project is depended on proprietary encryption libraries.
 It is recommended to place libraries in the artifactory so all parties could retrieve them easily.
 
-Alternatively, for development purposes, you can add libraries to the local maven as
+Alternatively, for development purposes, you can add libraries to the local maven with the commands like below.
+I've had some troubles with newer Maven releases. Maven version 3.2.5 worked well for me.
+You can download it from https://dlcdn.apache.org/maven/maven-3/3.2.5/binaries/apache-maven-3.2.5-bin.zip.
 
 ```shell
-mvn install:install-file -Dfile=confluent-encryption-common-2.0.8-cp-7.1/confluent-encryption-common-2.0.8-cp-7.1.jar \
--DgroupId=io.confluent.confluent-encryption -DartifactId=confluent-encryption-common -Dversion=2.0.8-cp-7.1 -Dpackaging=jar
+mvn install:install-file -Dfile=../confluent-encryption-3.0.0-cp-7.3/confluent-encryption-common-3.0.0-cp-7.3/confluent-encryption-common-3.0.0-cp-7.3.jar \
+-DgroupId=io.confluent.confluent-encryption -DartifactId=confluent-encryption-common -Dversion=3.0.0-cp-7.3 -Dpackaging=jar
 
-mvn install:install-file -Dfile=confluent-encryption-kafka-2.0.8-cp-7.1/confluent-encryption-kafka-2.0.8-cp-7.1.jar \
--DgroupId=io.confluent.confluent-encryption -DartifactId=confluent-encryption-kafka -Dversion=2.0.8-cp-7.1 -Dpackaging=jar
+mvn install:install-file -Dfile=../confluent-encryption-3.0.0-cp-7.3/confluent-encryption-kafka-3.0.0-cp-7.3/confluent-encryption-kafka-3.0.0-cp-7.3.jar \
+-DgroupId=io.confluent.confluent-encryption -DartifactId=confluent-encryption-kafka -Dversion=3.0.0-cp-7.3 -Dpackaging=jar
 
-mvn install:install-file -Dfile=confluent-encryption-serializer-2.0.8-cp-7.1/confluent-encryption-serializer-2.0.8-cp-7.1.jar \
--DgroupId=io.confluent.confluent-encryption -DartifactId=confluent-encryption-serializer -Dversion=2.0.8-cp-7.1 -Dpackaging=jar
+mvn install:install-file -Dfile=../confluent-encryption-3.0.0-cp-7.3/confluent-encryption-serializer-3.0.0-cp-7.3/confluent-encryption-serializer-3.0.0-cp-7.3.jar \
+-DgroupId=io.confluent.confluent-encryption -DartifactId=confluent-encryption-serializer -Dversion=3.0.0-cp-7.3 -Dpackaging=jar
 
-mvn install:install-file -Dfile=confluent-encryption-kstreams-2.0.8-cp-7.1/confluent-encryption-kstreams-2.0.8-cp-7.1.jar \
--DgroupId=io.confluent.confluent-encryption -DartifactId=confluent-encryption-kstreams -Dversion=2.0.8-cp-7.1 -Dpackaging=jar
+mvn install:install-file -Dfile=../confluent-encryption-3.0.0-cp-7.3/confluent-encryption-kstreams-3.0.0-cp-7.3/confluent-encryption-kstreams-3.0.0-cp-7.3.jar \
+-DgroupId=io.confluent.confluent-encryption -DartifactId=confluent-encryption-kstreams -Dversion=3.0.0-cp-7.3 -Dpackaging=jar
+
+mvn install:install-file -Dfile=../confluent-encryption-3.0.0-cp-7.3/confluent-encryption-vault-3.0.0-cp-7.3/confluent-encryption-vault-3.0.0-cp-7.3.jar \
+-DgroupId=io.confluent.confluent-encryption -DartifactId=confluent-encryption-vault -Dversion=3.0.0-cp-7.3 -Dpackaging=jar
 ```
 
 The commands above will copy jar files to you local `.m2` folder. The 'm2' folder in Maven is the default location 
@@ -75,8 +80,8 @@ Adding confluent binaries to the `PATH` might be helpful too.
 
 ```shell
 export JAVA_HOME="/usr/local/opt/openjdk@11"
-export CONFLUENT_HOME="/Users/kirill.kulikov/confluent/confluent-7.3.0"
-export PATH="$PATH:/Users/kirill.kulikov/confluent/confluent-7.3.0/bin"
+export CONFLUENT_HOME="/Users/kirill.kulikov/confluent/confluent-7.3.1"
+export PATH="$PATH:/Users/kirill.kulikov/confluent/confluent-7.3.1/bin"
 ```
 
 Clean up your local setup with 
@@ -134,20 +139,67 @@ openssl rsa -in private_key.pem -out public_key.pem -pubout -outform PEM
 You can pass a directory to `--spring.config.location`.
 Spring will load only the file application.properties and profile specific file like `application-{profile name}.properties`.
 
-Then you can start your application with:
-```
-java -jar {path of jar} --spring.config.location=/path/of/both/properties --spring.profiles.active=common
+Then you can start your applications as
+
+```shell
+# Producer
+mvn spring-boot:run -Dmaven.test.skip=true -Dstart-class=io.confluent.producer.BasicProducerApplication \
+-Dspring-boot.run.profiles=local-encrypted-payload
+
+# Consumer
+mvn spring-boot:run -Dmaven.test.skip=true -Dstart-class=io.confluent.consumer.BasicConsumerApplication \
+-Dspring-boot.run.profiles=local-encrypted-payload
+
+# Streams
+mvn spring-boot:run -Dmaven.test.skip=true -Dstart-class=io.confluent.streams.CountApplication \
+-Dspring-boot.run.profiles=local-encrypted-payload
+
+# Web
+mvn spring-boot:run -Dmaven.test.skip=true -Dstart-class=io.confluent.web.BasicWebApplication \
+-Dspring-boot.run.profiles=local-encrypted-payload -Dspring.main.web-application-type=servlet
 ```
 
 ## Hashicorp Vault
 
-You can run hashicorp vault locally using Docker with
+You can run Hashicorp Vault locally using Docker with
 
 ```shell
 docker-compose -f docker-hashicorp-vault/docker-compose.yml up
 ```
 
+## MongoDB Source Connector
+
+You can run MongoDB locally using Docker with
+
+```shell
+docker-compose -f docker-mongodb-source/docker-compose.yml up
+```
+
+Submit the connector configuration:
+
+```shell
+curl -s -X POST -H "Content-Type: application/json" \
+--data @docker-mongodb-source/mongo-source-connector.json \
+http://localhost:8083/connectors -w "\n"
+```
+
+## MongoDB Sink Connector
+
+```shell
+docker-compose -f docker-mongodb-sink/docker-compose.yml up
+```
+
+Submit the connector configuration:
+
+```shell
+curl -s -X POST -H "Content-Type: application/json" \
+--data @docker-mongodb-sink/mongo-sink-connector.json \
+http://localhost:8083/connectors -w "\n"
+```
+
 ## Field-level encryption
+
+To enable field-level encryption you can upload classifications and metadata configs to Schema Registry:  
 
 ```shell
 echo "{ \"schema\": \"$(cat field-classifications.json | sed 's/\"/\\\"/g')\" }" > field-classifications.schema
@@ -159,38 +211,7 @@ curl localhost:8081/subjects/field-metadata -XDELETE # delete the subject if inc
 curl localhost:8081/subjects/field-metadata/versions -XPOST -H "Content-Type: application/json" -d @field-metadata.schema
 ```
 
-```shell
-curl -X POST \
-     -H "Content-Type: application/json" \
-     --data '
-     {
-       "name": "mongo-sink",
-       "config": {
-         "connector.class":"com.mongodb.kafka.connect.MongoSinkConnector",
-         "connection.uri":"mongodb://root:example@localhost:27017",
-         "database":"quickstart",
-         "collection":"customers",
-         "topics":"avro-customers",
-         "value.converter": "io.confluent.encryption.connect.SecuredAvroConverter",
-         "value.converter.schema.registry.url": "http://localhost:8081", 
-         "value.converter.encryption.metadata.name": "field-metadata",
-         "value.converter.encryption.metadata.policy.class": "CatalogPolicy",
-         "value.converter.encryption.classifications.name": "field-classifications",
-         "value.converter.encryption.provider.name": "cached",
-         "value.converter.cached.provider.class": "CacheCipherProvider",
-         "value.converter.cached.provider.name": "generator",
-         "value.converter.generator.provider.class": "GeneratorCipherProvider",
-         "value.converter.generator.provider.name": "local",
-         "value.converter.local.provider.class": "LocalCipherProvider",
-         "value.converter.local.provider.keys": "RSAWrappingKey",
-         "value.converter.local.provider.RSAWrappingKey.key.type": "KeyPair",
-         "value.converter.local.provider.RSAWrappingKey.key.private": "MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDnaSw7eWcppqCW0dMJ9Q1aC+aUvg7K0xTYfEStyMOym9a+EKjcr/6hU0LkIUksmSmLGBgYVAey2OPXFmO1B3Qbvxla9EPtdQ/qilJluB7HH2z10oeBuS7tkdo+zA/u4AHDOCfa9+yk47IWNLPBjkVs4xMo3cL6rVyM5hu5hVq3lRVYbVV2AT7oYdM3C6nEw5kdE01uSgjkcpd7Rg58ZiLNYdr91rwEblxxoF40tdHBs5oQ4DWMyx1hZ1npyekEsVYsq/ACsEaIMGQXNZsLZ7XXmAV14sZXvSVsHiUGkv/7LKgsUEZ0lUH9PRqs4jK+6nSQOxiLqM6yCRAzr5MSiOlXAgMBAAECggEAKC3fqzfqDJZM3cLyxJDSz6avU3YodVjvDqOM/SuVpwZd48RavW6lZHdjbt7EqMSzLN5zGI5Gg+waqzbM+xqfM04b5enxfWJM8CkyI00zstkm/wud0Y1Is6EWZr7hqVUlmTK/4MoZQYvzWN2vtFSygzRuGDNg7kt5fVFa0PxxgtxAPwOXFWDMT7bU7csjrsOtxm7bgwm+rxSCSPU9J834TTzQlPID8tP9Ajvj4TrllZN55oKdDNO5aVaMkYRKMBbg/mzHpQE9wWeKX1iGYR0x8N3ctKJvAC6SYcnOiAKKPg0C5Qi6RFg88GdaYq1tUtDbjcP5CUWMZ2X9M5XEqO2WAQKBgQD3iRy7Fm91EFy2duJxNULe0qU5hbRekCmEX7/5HNk+BjWDFLLVFkgtWop7+p+G/TwmmPdpEtRYCbT1k2qHrPgohReo2VzF+K7Q3yppnFu2dPy5T2AL02J9J4BCzxB1uwzpnGd2PqwUX79WsF2ol18F04sMeXUzuKggOm7M2nl8VwKBgQDvUugqw3Yfl9TF5VkVyA26/FOfMYQZ2ovzpTg9Qq7il1F37h8Lg83zvI63NXUlY2khweo0FyMbtZpG0a9dpQBE0f4D2n9JsmpuGbgjYYNNEWUQvuI3bqdQ/ecPpMGvYXWvtnTPG0jr6GbSobL/RXwgOp4H8tOpFNEejaARjDfbAQKBgQCmpYdTKMqGnCpeqPDP2FSZoGSdsjb5BsL8nF2ov1Q93n4+LjwrGuIirnbW+qZVgbzyGz9NXODaGEbcoY8xojA7T0bbZOKBYWeHtQZfrWVNE7tkolx9+aSvr105HR/usqwBxksdHxpIaSFuojObobTWPlG5ZzeRR3rgn5Yikd8B5wKBgQC2+GLJ9wBDbTheSFdQoM9miu1/w0Kk5YKkN0gFBgtg76F4mJQhoJZ/50QRbAxxFkzVY0UkqB/OWoxl4oA5jyHie83BsnYoqQBXxtASNMZG0Kq9H8Mh8DZ5ZHUYb7Uo2dE5ErzBbrHUsqySEtAf/EbG+SnDF/KczW6H9m1PnS1DAQKBgCANQP+nXYE2/81+wmlPqOZqpXdZaTc8tNB2vHfpamw/OCZqoRmZB9iUPOVfeTH6JmlL3K1BRaDnYJci/rWP/QjGLcterlihnZvOzVOfBgsS8MXw1jUjThNI6YAzhEOKBantke/ngwC+3X0s7GoEUIP+D3zdGAk34RhvEryeF+dY",
-         "value.converter.local.provider.RSAWrappingKey.key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA52ksO3lnKaagltHTCfUNWgvmlL4OytMU2HxErcjDspvWvhCo3K/+oVNC5CFJLJkpixgYGFQHstjj1xZjtQd0G78ZWvRD7XUP6opSZbgexx9s9dKHgbku7ZHaPswP7uABwzgn2vfspOOyFjSzwY5FbOMTKN3C+q1cjOYbuYVat5UVWG1VdgE+6GHTNwupxMOZHRNNbkoI5HKXe0YOfGYizWHa/da8BG5ccaBeNLXRwbOaEOA1jMsdYWdZ6cnpBLFWLKvwArBGiDBkFzWbC2e115gFdeLGV70lbB4lBpL/+yyoLFBGdJVB/T0arOIyvup0kDsYi6jOsgkQM6+TEojpVwIDAQAB"
-         }
-     }
-     ' \
-     http://localhost:8083/connectors -w "\n"
-```
+Alternatively, you can just run `./field-encryption-config/run.sh` which will do all of the above for you.
 
 ## Contributing
 
