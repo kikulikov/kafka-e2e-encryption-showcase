@@ -8,6 +8,13 @@
       "classifications": [
         "PII"
       ]
+    },
+    {
+      "name": "card_number",
+      "type": "string",
+      "classifications": [
+        "PII"
+      ]
     }
   ]
 }

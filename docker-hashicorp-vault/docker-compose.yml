@@ -17,5 +17,5 @@ services:
     environment:
       VAULT_ADDR: "http://vault-server:8200"
     volumes:
-      - ./run.sh:/opt/run.sh
-    command: sh -c "/opt/run.sh"
+      - ./start.sh:/opt/start.sh
+    command: sh -c "/opt/start.sh"

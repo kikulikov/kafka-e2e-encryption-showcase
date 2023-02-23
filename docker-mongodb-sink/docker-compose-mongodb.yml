@@ -1,10 +1,10 @@
-# Use root/example as user/password credentials
 version: '3.8'
 
 services:
-
-  mongo:
+  mongodb:
     image: mongo
+    container_name: mongodb
+    hostname: mongodb
     restart: always
     ports:
       - "27017:27017"
@@ -12,12 +12,14 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: confluent
 
-  mongo-express:
+  mongodb-express:
     image: mongo-express
+    container_name: mongodb-express
+    hostname: mongodb-express
     restart: always
     ports:
-      - "18081:8081"
+      - "28081:8081"
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: confluent
-      ME_CONFIG_MONGODB_URL: mongodb://root:confluent@mongo:27017/
+      ME_CONFIG_MONGODB_URL: mongodb://root:confluent@mongodb:27017/

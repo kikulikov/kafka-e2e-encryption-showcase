@@ -172,28 +172,28 @@ docker-compose -f docker-hashicorp-vault/docker-compose.yml up
 You can run MongoDB locally using Docker with
 
 ```shell
-docker-compose -f docker-mongodb-source/docker-compose.yml up
+docker-compose -f docker-mongo-source/docker-compose.yml up
 ```
 
 Submit the connector configuration:
 
 ```shell
 curl -s -X POST -H "Content-Type: application/json" \
---data @docker-mongodb-source/mongo-source-connector.json \
+--data @docker-mongo-source/mongo-source-connector.json \
 http://localhost:8083/connectors -w "\n"
 ```
 
 ## MongoDB Sink Connector
 
 ```shell
-docker-compose -f docker-mongodb-sink/docker-compose.yml up
+docker-compose -f docker-mongo-sink/docker-compose.yml up
 ```
 
 Submit the connector configuration:
 
 ```shell
 curl -s -X POST -H "Content-Type: application/json" \
---data @docker-mongodb-sink/mongo-sink-connector.json \
+--data @docker-mongo-sink/encrypted-payload-mongodb-sink.json \
 http://localhost:8083/connectors -w "\n"
 ```
 
@@ -211,7 +211,7 @@ curl localhost:8081/subjects/field-metadata -XDELETE # delete the subject if inc
 curl localhost:8081/subjects/field-metadata/versions -XPOST -H "Content-Type: application/json" -d @field-metadata.schema
 ```
 
-Alternatively, you can just run `./field-encryption-config/run.sh` which will do all of the above for you.
+Alternatively, you can just run `./field-encryption-configs/submit.sh` which will do all of the above for you.
 
 ## Contributing
 

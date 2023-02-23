@@ -1,22 +1,27 @@
 #!/usr/bin/env bash
 
-echo "Submit Classifications"
+cd "$(dirname "$0")" || exit
+
+echo "Submit Classifications.."
 
 curl localhost:8081/subjects/field-classifications -XDELETE # delete the subject if incompatible
 
-echo "{ \"schema\": \"$(cat field-classifications.json | sed 's/\"/\\\"/g')\" }" > field-classifications.schema
+echo "{ \"schema\": \"$(sed 's/\"/\\\"/g' field-classifications.json)\" }" > field-classifications.schema
 
+echo
 curl localhost:8081/subjects/field-classifications/versions -XPOST \
 -H "Content-Type: application/json" -d @field-classifications.schema
 
 rm -f field-classifications.schema
 
-echo "Submit Metadata"
+echo
+echo "Submit Metadata.."
 
 curl localhost:8081/subjects/field-metadata -XDELETE # delete the subject if incompatible
 
-echo "{ \"schema\": \"$(cat field-metadata.json | sed 's/\"/\\\"/g')\" }" > field-metadata.schema
+echo "{ \"schema\": \"$(sed 's/\"/\\\"/g' field-metadata.json)\" }" > field-metadata.schema
 
+echo
 curl localhost:8081/subjects/field-metadata/versions -XPOST \
 -H "Content-Type: application/json" -d @field-metadata.schema
 

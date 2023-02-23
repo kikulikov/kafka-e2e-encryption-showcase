@@ -5,8 +5,8 @@
   "classifications": {
     "PII": {
       "encrypt": {
-        "key": "GeneratedKey",
-        "wrapping.key": "RSAWrappingKey"
+        "key": "DataCipher",
+        "wrapping.key": "MasterCipher"
       }
     }
   }

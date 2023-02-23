@@ -30,8 +30,12 @@ spring:
         encryption.provider.name: "generator"
         value.serializer.wrapping.key: "MasterCipher"
         value.serializer.wrapping.key.provider.name: "local"
+        # Data cipher AES generator provider
         generator.provider.class: "AESGeneratorCipherProvider"
+        generator.provider.cache.expiry: 60
         generator.provider.symmetric.key.size: 256
+        generator.provider.dynamic.iv: true
+        # Wrapping cipher provider configuration
         local.provider.class: "LocalCipherProvider"
         local.provider.keys: "MasterCipher"
         local.provider.MasterCipher.key.type: "KeyPair"
@@ -48,8 +52,12 @@ spring:
         encryption.provider.name: "generator"
         value.deserializer.wrapping.key: "MasterCipher"
         value.deserializer.wrapping.key.provider.name: "local"
+        # Data cipher AES generator provider
         generator.provider.class: "AESGeneratorCipherProvider"
+        generator.provider.cache.expiry: 60
         generator.provider.symmetric.key.size: 256
+        generator.provider.dynamic.iv: true
+        # Wrapping cipher provider configuration
         local.provider.class: "LocalCipherProvider"
         local.provider.keys: "MasterCipher"
         local.provider.MasterCipher.key.type: "KeyPair"
