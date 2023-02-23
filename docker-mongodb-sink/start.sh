@@ -4,7 +4,8 @@ cd "$(dirname "$0")" || exit
 
 echo
 echo "Starting the containers.."
-docker-compose -f docker-compose-confluent.yml -f docker-compose-mongodb.yml up -d
+docker compose --env-file docker-compose-mongodb.env \
+--file docker-compose-confluent.yml --file docker-compose-mongodb.yml up --build --detach
 
 echo
 echo "Waiting for containers to start.."
