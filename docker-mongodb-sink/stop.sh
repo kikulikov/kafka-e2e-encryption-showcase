@@ -2,4 +2,5 @@
 
 cd "$(dirname "$0")" || exit
 
-docker-compose -f docker-compose-confluent.yml -f docker-compose-mongodb.yml down
+docker-compose --env-file docker-compose-mongodb.env \
+--file docker-compose-confluent.yml --file docker-compose-mongodb.yml down

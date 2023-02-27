@@ -21,15 +21,12 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: io.confluent.encryption.serializers.avro.SecuredSpecificAvroSerializer
       properties:
-        value.serializer.key: "DataCipher"
-        encryption.provider.name: "generator"
-        value.serializer.wrapping.key: "MasterCipher"
-        value.serializer.wrapping.key.provider.name: "local"
+        encryption.provider.name: "cached"
         # Data cipher AES generator provider
-        generator.provider.class: "AESGeneratorCipherProvider"
-        generator.provider.cache.expiry: 60
-        generator.provider.symmetric.key.size: 256
-        generator.provider.dynamic.iv: true
+        cached.provider.class: "CacheCipherProvider"
+        cached.provider.name: "generator"
+        generator.provider.class: "GeneratorCipherProvider"
+        generator.provider.name: "local"
         # Wrapping cipher provider configuration
         local.provider.class: "LocalCipherProvider"
         local.provider.keys: "MasterCipher"
@@ -47,15 +44,12 @@ spring:
       properties.specific.avro.reader: true
       auto-offset-reset: latest
       properties:
-        value.deserializer.key: "DataCipher"
-        encryption.provider.name: "generator"
-        value.deserializer.wrapping.key: "MasterCipher"
-        value.deserializer.wrapping.key.provider.name: "local"
+        encryption.provider.name: "cached"
         # Data cipher AES generator provider
-        generator.provider.class: "AESGeneratorCipherProvider"
-        generator.provider.cache.expiry: 60
-        generator.provider.symmetric.key.size: 256
-        generator.provider.dynamic.iv: true
+        cached.provider.class: "CacheCipherProvider"
+        cached.provider.name: "generator"
+        generator.provider.class: "GeneratorCipherProvider"
+        generator.provider.name: "local"
         # Wrapping cipher provider configuration
         local.provider.class: "LocalCipherProvider"
         local.provider.keys: "MasterCipher"

@@ -18,7 +18,6 @@ import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Produced;
-import org.assertj.core.api.Assertions;
 import org.junit.ClassRule;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,7 +41,7 @@ import static org.apache.kafka.clients.CommonClientConfigs.BOOTSTRAP_SERVERS_CON
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Testcontainers
-class IntegrationEncryptionTest {
+class KafkaStreamsEncryptionTest {
 
     private static final String INPUT_TOPIC = "input";
     private static final String OUTPUT_TOPIC = "output";

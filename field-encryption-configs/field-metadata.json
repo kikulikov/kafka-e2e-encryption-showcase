@@ -3,14 +3,14 @@
   "name": "Metadata",
   "fields": [
     {
-      "name": "book_title",
+      "name": "card_number",
       "type": "string",
       "classifications": [
         "PII"
       ]
     },
     {
-      "name": "card_number",
+      "name": "book_title",
       "type": "string",
       "classifications": [
         "PII"

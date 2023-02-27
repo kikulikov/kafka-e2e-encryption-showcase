@@ -9,21 +9,21 @@ import org.junit.jupiter.api.Test;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
-class KeyPairEncryptionTest {
+class PlainKeyPairEncryptionTest {
 
     @Test
     void keyPairSerializerWithGeneratedKey() {
         final var config = new HashMap<String, String>();
+        config.put("encryption.provider.name", "generator");
         // serializer configuration
         config.put("value.serializer.key", "DataCipher");
         config.put("value.serializer.wrapping.key", "MasterCipher");
+        config.put("value.serializer.wrapping.key.provider.name", "local");
         // deserializer configuration
         config.put("value.deserializer.key", "DataCipher");
         config.put("value.deserializer.wrapping.key", "MasterCipher");
-        // encryption
-        config.put("encryption.provider.name", "generator");
-        config.put("value.serializer.wrapping.key.provider.name", "local");
         config.put("value.deserializer.wrapping.key.provider.name", "local");
+        // encryption
         config.put("generator.provider.class", "AESGeneratorCipherProvider");
         config.put("generator.provider.symmetric.key.size", "256");
         config.put("local.provider.class", "LocalCipherProvider");
